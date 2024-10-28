@@ -29,11 +29,11 @@ A classe tem como seu objetivo armazenar as tarefas
     
 * ## Métodos:
 
-   - read: Método para ler uma tarefa pelo ID
-   - updade: Método para atualizar uma tarefa existente
-   - delete: Método para excluir uma tarefa pelo ID e atualizar o índice 1:N
-   - buscarPorCategoria: Método para buscar todas as tarefas por categoria
-   - ListarTodasTarefas
+   - read: Método para ler uma categoria pelo ID
+   - updade: Método para atualizar uma categoria existente
+   - delete: Método para excluir uma categoria pelo ID e atualizar o índice 1:N
+   - buscarPorNome: Método para buscar uma categoria pelo nome
+   - ListarTodasCategorias
 
 ### Classe Arquivo Categoria
 
