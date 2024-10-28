@@ -62,11 +62,13 @@ A classe tem como seu objetivo armazenar as tarefas
   
 ## Perguntas
 
-  - O trabalho possui um índice direto implementado com a tabela hash extensível? Sim
-  - A operação de inclusão insere um novo registro no fim do arquivo e no índice e retorna o ID desse registro? Sim 
-  - A operação de busca retorna os dados do registro, após localizá-lo por meio do índice direto? Sim
-  - A operação de alteração altera os dados do registro e trata corretamente as reduções e aumentos no espaço do registro? Sim
-  - A operação de exclusão marca o registro como excluído e o remove do índice direto? Sim
+  - O CRUD (com índice direto) de categorias foi implementado? Sim
+  - Há um índice indireto de nomes para as categorias? Sim
+  - O atributo de ID de categoria, como chave estrangeira, foi criado na classe Tarefa? Sim
+  - Há uma árvore B+ que registre o relacionamento 1:N entre tarefas e categorias? Sim
+  - É possível listar as tarefas de uma categoria? Sim
+  - A remoção de categorias checa se há alguma tarefa vinculada a ela? Sim
+  - A inclusão da categoria em uma tarefa se limita às categorias existentes? Sim
   - O trabalho está funcionando corretamente? Sim
   - O trabalho está completo? Sim
   - O trabalho é original e não a cópia de um trabalho de outro grupo? Sim
