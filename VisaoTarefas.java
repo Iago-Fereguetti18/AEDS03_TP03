@@ -58,19 +58,32 @@ public class VisaoTarefas {
         }
 
         System.out.print("Opção: ");
-        int escolhaCategoria = scanner.nextInt();
-        scanner.nextLine(); // Limpar o buffer
+        int escolhaCategoria;
+        try {
+            escolhaCategoria = scanner.nextInt();
+            scanner.nextLine(); // Limpar o buffer
 
-        // Mapeia a escolha do usuário para o ID real da categoria
-        int idCategoria = categorias.get(escolhaCategoria - 1).getId();
+            // Verificar se a escolha está dentro do limite
+            if (escolhaCategoria < 1 || escolhaCategoria > categorias.size()) {
+                throw new IndexOutOfBoundsException("Opção fora do limite.");
+            }
+            // Mapeia a escolha do usuário para o ID real da categoria
+            int idCategoria = categorias.get(escolhaCategoria - 1).getId();
 
-        // Cria a nova tarefa com o id da categoria escolhida
-        Tarefa tarefa = new Tarefa(-1, nome, idCategoria);
-        if (controleTarefas.adicionarTarefa(tarefa)) {
-            System.out.println("Tarefa adicionada com sucesso!");
-        } else {
-            System.out.println("Erro ao adicionar tarefa.");
+            // Cria a nova tarefa com o id da categoria escolhida
+            Tarefa tarefa = new Tarefa(-1, nome, idCategoria);
+            if (controleTarefas.adicionarTarefa(tarefa)) {
+                System.out.println("Tarefa adicionada com sucesso!");
+            } else {
+                System.out.println("Erro ao adicionar tarefa.");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Opção inválida.");
+            return;
         }
+
+
     }
 
     private void excluirTarefa() throws Exception {
