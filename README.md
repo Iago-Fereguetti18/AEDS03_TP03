@@ -33,7 +33,7 @@ A classe tem como seu objetivo armazenar as tarefas
    - updade: Método para atualizar uma categoria existente
    - delete: Método para excluir uma categoria pelo ID e atualizar o índice 1:N
    - buscarPorNome: Método para buscar uma categoria pelo nome
-   - ListarTodasCategorias
+   - ListarTodasCategorias: Método para listar todas as categorias
 
 ### Classe Arquivo Categoria
 
