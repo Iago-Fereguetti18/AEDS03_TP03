@@ -187,7 +187,7 @@ A classe tem como seu objetivo armazenar as tarefas
 
 ## Experiência
 
-  Inicialmnente tivemos dificuldade para juntar o que tinhamos com os novos 
+  Inicialmente tivemos dificuldade para juntar o que tinhamos com os novos 
   
 ## Perguntas
 
