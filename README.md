@@ -25,10 +25,10 @@ A classe tem como seu objetivo armazenar as tarefas
 * ## Construtores:
    
   - ArquivoTarefas: Construtor que inicializa o arquivo de tarefas e o índice para o
-  - Create: Método para criar uma nova tarefa no arquivo e no índice 1:N
     
 * ## Métodos:
 
+   - create: Método para criar uma nova tarefa no arquivo e no índice 1:N
    - read: Método para ler uma categoria pelo ID
    - updade: Método para atualizar uma categoria existente
    - delete: Método para excluir uma categoria pelo ID e atualizar o índice 1:N
@@ -50,11 +50,13 @@ A classe tem como seu objetivo armazenar as tarefas
     
 * ## Métodos:
 
+   - create: Método para criar uma nova tarefa no arquivo e no índice 1:N
    - read: Método para ler uma tarefa pelo ID
    - updade: Método para atualizar uma tarefa existente
    - delete: Método para excluir uma tarefa pelo ID e atualizar o índice 1:N
    - buscarPorCategoria: Método para buscar todas as tarefas por categoria
-   - ListarTodasTarefas
+   - listarTodasCategorias: Método para listar todas as categorias - percorre sequencialmente
+   - formatarNome: Método auxiliar para formatar o nome com a primeira letra maiúscula e o restante minúsculo
 
 ## Experiência
 
