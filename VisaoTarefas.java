@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -21,6 +22,7 @@ public class VisaoTarefas {
             System.out.println("\t1) Incluir");
             System.out.println("\t2) Excluir");
             System.out.println("\t3) Listar");
+            System.out.println("\t4) Atualizar Tarefa");
             System.out.println("\t0) Retornar ao menu anterior");
             System.out.print("\nEscolha uma opção: ");
             opcao = scanner.nextInt();
@@ -36,6 +38,9 @@ public class VisaoTarefas {
                 case 3:
                     listarTarefas();
                     break;
+                case 4:
+                    atualizarTarefa();
+                    break;
                 case 0:
                     System.out.println("Saindo do menu de tarefas...");
                     break;
@@ -44,6 +49,56 @@ public class VisaoTarefas {
                     break;
             }
         } while (opcao != 0);
+    }
+
+    private void atualizarTarefa() throws Exception {
+        // Listar as tarefas disponíveis
+        ArrayList<Tarefa> tarefas = controleTarefas.listarTodasTarefas();
+
+        if (tarefas.isEmpty()) {
+            System.out.println("Nenhuma tarefa encontrada para atualizar.");
+            return;
+        }
+
+        // Exibir as tarefas para o usuário escolher
+        System.out.println("Escolha a tarefa que deseja atualizar:");
+        for (int i = 0; i < tarefas.size(); i++) {
+            System.out.println("\t(" + (i + 1) + ") " + tarefas.get(i).getNome());
+        }
+
+        System.out.print("Opção: ");
+        int escolha = scanner.nextInt();
+        scanner.nextLine(); // Limpar o buffer
+
+        if (escolha < 1 || escolha > tarefas.size()) {
+            System.out.println("Opção inválida.");
+            return;
+        }
+
+        Tarefa tarefaSelecionada = tarefas.get(escolha - 1);
+
+        // Solicitar novos dados para a tarefa
+        System.out.println("Atualizando a tarefa: " + tarefaSelecionada.getNome());
+
+        System.out.print("Novo nome (ou Enter para manter o mesmo): ");
+        String novoNome = scanner.nextLine();
+        if (!novoNome.isBlank()) {
+            tarefaSelecionada.setNome(novoNome);
+        }
+
+        System.out.print("Nova prioridade (0 - Baixa, 1 - Média, 2 - Alta, ou -1 para manter): ");
+        byte novaPrioridade = scanner.nextByte();
+        scanner.nextLine(); // Limpar o buffer
+        if (novaPrioridade >= 0 && novaPrioridade <= 2) {
+            tarefaSelecionada.setPrioridade(novaPrioridade);
+        }
+
+        // Atualiza a tarefa no controle
+        if (controleTarefas.atualizarTarefa(tarefaSelecionada)) {
+            System.out.println("Tarefa atualizada com sucesso!");
+        } else {
+            System.out.println("Erro ao atualizar a tarefa.");
+        }
     }
 
     private void adicionarTarefa() throws Exception {
@@ -70,8 +125,22 @@ public class VisaoTarefas {
             // Mapeia a escolha do usuário para o ID real da categoria
             int idCategoria = categorias.get(escolhaCategoria - 1).getId();
 
-            // Cria a nova tarefa com o id da categoria escolhida
-            Tarefa tarefa = new Tarefa(-1, nome, idCategoria);
+            // Solicitar outros atributos
+            System.out.print("Data de criação (formato: YYYY-MM-DD): ");
+            LocalDate dataCriacao = LocalDate.parse(scanner.nextLine());
+
+            System.out.print("Data de conclusão (formato: YYYY-MM-DD): ");
+            LocalDate dataConclusao = LocalDate.parse(scanner.nextLine());
+
+            System.out.print("Status (0 - Pendente, 1 - Em Progresso, 2 - Concluída): ");
+            byte status = scanner.nextByte();
+
+            System.out.print("Prioridade (0 - Baixa, 1 - Média, 2 - Alta): ");
+            byte prioridade = scanner.nextByte();
+            scanner.nextLine(); // Limpar o buffer
+
+            // Cria a nova tarefa com todos os atributos
+            Tarefa tarefa = new Tarefa(-1, nome, dataCriacao, dataConclusao, status, prioridade, idCategoria);
             if (controleTarefas.adicionarTarefa(tarefa)) {
                 System.out.println("Tarefa adicionada com sucesso!");
             } else {

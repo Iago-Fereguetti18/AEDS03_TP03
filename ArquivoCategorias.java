@@ -25,11 +25,11 @@ public class ArquivoCategorias extends Arquivo<Categoria> {
         indiceNomeCategoria.create(new ParNomeId(categoria.getNome(), categoria.getId()));
     }
 
-    // Método para ler uma categoria pelo ID
-    @Override
-    public Categoria read(int id) throws Exception {
-        return super.read(id);
-    }
+    // // Método para ler uma categoria pelo ID
+    // @Override
+    // public Categoria read(int id) throws Exception {
+    //     return super.read(id);
+    // }
 
     // Método para atualizar uma categoria existente
     @Override
@@ -52,7 +52,7 @@ public class ArquivoCategorias extends Arquivo<Categoria> {
         Categoria categoria = read(id);
         if (categoria != null) {
             // Marcação lógica
-            categoria.setExcluido(true);
+            //categoria.setExcluido(true);
             update(categoria); // Atualiza para salvar a marcação de exclusão
 
             // Remover do índice por nome e exclusão física
@@ -82,28 +82,27 @@ public class ArquivoCategorias extends Arquivo<Categoria> {
         return categorias;
     }
 
-    // Método para listar todas as categorias - percorre sequencialmente
-    public ArrayList<Categoria> listarTodasCategorias() throws Exception {
-        ArrayList<Categoria> categorias = new ArrayList<>();
-        int id = 0;
-        int contagemNulls = 0; // Contador de consecutivos nulos
-        int limiteNulls = 10; // Limite de nulls consecutivos antes de parar
+ // Método para listar todas as categorias usando a árvore B+
+public ArrayList<Categoria> listarTodasCategorias() throws Exception {
+    ArrayList<Categoria> categorias = new ArrayList<>();
 
-        while (contagemNulls < limiteNulls) {
-            Categoria categoria = read(id);
-            if (categoria != null && !categoria.isExcluido()) { // Ignora categorias excluídas logicamente
-                categoria.setNome(formatarNome(categoria.getNome()));
-                categorias.add(categoria);
-                contagemNulls = 0; // Resetar contador de nulls ao encontrar uma categoria válida
-            } else {
-                contagemNulls++;
-            }
-            id++;
+    // Busca todas as entradas na árvore B+
+    ArrayList<ParNomeId> pares = indiceNomeCategoria.read(null);
+
+    // Itera pelos pares para recuperar as categorias correspondentes
+    for (ParNomeId par : pares) {
+        Categoria categoria = read(par.getId());
+        if (categoria != null) { // Ignora categorias excluídas
+            categoria.setNome(formatarNome(categoria.getNome()));
+            categorias.add(categoria);
         }
-
-        categorias.sort(Comparator.comparing(Categoria::getNome));
-        return categorias;
     }
+
+    // Ordena as categorias por nome (não é estritamente necessário, pois a B+ já mantém a ordem)
+    categorias.sort(Comparator.comparing(Categoria::getNome));
+    return categorias;
+}
+
 
     // Método auxiliar para formatar o nome com a primeira letra maiúscula e o restante minúsculo
     private String formatarNome(String nome) {

@@ -23,7 +23,8 @@ public class VisaoCategorias {
             System.out.println("\t1) Incluir");
             System.out.println("\t2) Excluir");
             System.out.println("\t3) Listar");
-            System.out.println("\t4) Gerar Relatório de Tarefas por Categoria");
+            System.out.println("\t4) Atualizar Categoria");
+            System.out.println("\t5) Gerar Relatório de Tarefas por Categoria");
             System.out.println("\t0) Retornar ao menu anterior");
             System.out.print("\tEscolha uma opção: ");
             opcao = scanner.nextInt();
@@ -40,6 +41,9 @@ public class VisaoCategorias {
                     listarCategorias();
                     break;
                 case 4:
+                    atualizarCategoria();
+                    break;
+                case 5:
                     gerarRelatorioTarefasPorCategoria();
                     break;
                 case 0:
@@ -51,7 +55,49 @@ public class VisaoCategorias {
             }
         } while (opcao != 0);
     }
-
+    private void atualizarCategoria() throws Exception {
+        // Listar as categorias disponíveis
+        ArrayList<Categoria> categorias = controleCategorias.listarTodasCategorias();
+    
+        if (categorias.isEmpty()) {
+            System.out.println("Nenhuma categoria encontrada para atualizar.");
+            return;
+        }
+    
+        // Exibir as categorias para o usuário escolher
+        System.out.println("Escolha a categoria que deseja atualizar:");
+        for (int i = 0; i < categorias.size(); i++) {
+            System.out.println("\t(" + (i + 1) + ") " + categorias.get(i).getNome());
+        }
+    
+        System.out.print("Opção: ");
+        int escolha = scanner.nextInt();
+        scanner.nextLine(); // Limpar o buffer
+    
+        if (escolha < 1 || escolha > categorias.size()) {
+            System.out.println("Opção inválida.");
+            return;
+        }
+    
+        Categoria categoriaSelecionada = categorias.get(escolha - 1);
+    
+        // Solicitar novos dados para a categoria
+        System.out.println("Atualizando a categoria: " + categoriaSelecionada.getNome());
+    
+        System.out.print("Novo nome (ou Enter para manter o mesmo): ");
+        String novoNome = scanner.nextLine();
+        if (!novoNome.isBlank()) {
+            categoriaSelecionada.setNome(novoNome);
+        }
+    
+        // Atualiza a categoria no controle
+        if (controleCategorias.atualizarCategoria(categoriaSelecionada)) {
+            System.out.println("Categoria atualizada com sucesso!");
+        } else {
+            System.out.println("Erro ao atualizar a categoria.");
+        }
+    }
+    
     private void adicionarCategoria() throws Exception {
         System.out.print("Nome da nova categoria: ");
         String nome = scanner.nextLine();

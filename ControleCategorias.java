@@ -52,4 +52,9 @@ public class ControleCategorias {
     public ArrayList<Categoria> listarTodasCategorias() throws Exception {
         return arquivoCategorias.listarTodasCategorias();
     }
+
+    public boolean atualizarCategoria(Categoria categoria) throws Exception {
+        return arquivoCategorias.update(categoria);
+    }
+    
 }

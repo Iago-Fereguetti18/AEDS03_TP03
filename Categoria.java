@@ -10,7 +10,7 @@ public class Categoria implements Registro {
     
     private int id;
     private String nome;
-    private boolean excluido = false; // Campo para exclusão lógica
+    //private boolean excluido = false; // Campo para exclusão lógica
 
     // Construtor padrão
     public Categoria() {
@@ -46,13 +46,13 @@ public class Categoria implements Registro {
         return this.nome.toLowerCase();
     }
 
-    public boolean isExcluido() {
-        return excluido;
-    }
+    // public boolean isExcluido() {
+    //     return excluido;
+    // }
 
-    public void setExcluido(boolean excluido) {
-        this.excluido = excluido;
-    }
+    // public void setExcluido(boolean excluido) {
+    //     this.excluido = excluido;
+    // }
 
     // Método toByteArray para serialização
     public byte[] toByteArray() throws IOException {

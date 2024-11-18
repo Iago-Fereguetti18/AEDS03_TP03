@@ -15,6 +15,11 @@ public class ControleTarefas {
         return true; // Assumindo que a criação é bem-sucedida
     }
 
+    // Método para atualizar uma tarefa existente
+    public boolean atualizarTarefa(Tarefa tarefa) throws Exception {
+        return arquivoTarefas.update(tarefa);
+    }
+
     // Método para excluir uma tarefa
     public boolean excluirTarefa(int idTarefa) throws Exception {
         return arquivoTarefas.delete(idTarefa);
@@ -30,4 +35,3 @@ public class ControleTarefas {
         return arquivoCategorias.listarTodasCategorias();
     }
 }
-

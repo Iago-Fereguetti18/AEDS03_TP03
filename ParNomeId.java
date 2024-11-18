@@ -49,6 +49,14 @@ public class ParNomeId implements aed3.RegistroArvoreBMais<ParNomeId> {
     return null;
   }
 
+  public int getId() {
+    return this.id;
+  }
+
+  public String getNome() {
+    return this.nome;
+  }
+
   public short size() {
     return this.TAMANHO;
   }
