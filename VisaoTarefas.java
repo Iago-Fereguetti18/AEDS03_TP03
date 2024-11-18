@@ -126,18 +126,22 @@ public class VisaoTarefas {
             int idCategoria = categorias.get(escolhaCategoria - 1).getId();
 
             // Solicitar outros atributos
-            System.out.print("Data de criação (formato: YYYY-MM-DD): ");
-            LocalDate dataCriacao = LocalDate.parse(scanner.nextLine());
-
-            System.out.print("Data de conclusão (formato: YYYY-MM-DD): ");
-            LocalDate dataConclusao = LocalDate.parse(scanner.nextLine());
-
-            System.out.print("Status (0 - Pendente, 1 - Em Progresso, 2 - Concluída): ");
-            byte status = scanner.nextByte();
-
-            System.out.print("Prioridade (0 - Baixa, 1 - Média, 2 - Alta): ");
-            byte prioridade = scanner.nextByte();
-            scanner.nextLine(); // Limpar o buffer
+            
+            System.out.print("Data de criação (formato: YYYY-MM-DD ou Enter para data atual): ");
+            String dataCriacaoInput = scanner.nextLine();
+            LocalDate dataCriacao = dataCriacaoInput.isBlank() ? LocalDate.now() : LocalDate.parse(dataCriacaoInput);
+        
+            System.out.print("Data de conclusão (formato: YYYY-MM-DD ou Enter para indefinida): ");
+            String dataConclusaoInput = scanner.nextLine();
+            LocalDate dataConclusao = dataConclusaoInput.isBlank() ? LocalDate.of(1970, 1, 1) : LocalDate.parse(dataConclusaoInput);
+        
+            System.out.print("Status (0 - Pendente, 1 - Em Progresso, 2 - Concluída ou Enter para padrão [Pendente]): ");
+            String statusInput = scanner.nextLine();
+            byte status = statusInput.isBlank() ? 0 : Byte.parseByte(statusInput);
+        
+            System.out.print("Prioridade (0 - Baixa, 1 - Média, 2 - Alta ou Enter para padrão [Baixa]): ");
+            String prioridadeInput = scanner.nextLine();
+            byte prioridade = prioridadeInput.isBlank() ? 0 : Byte.parseByte(prioridadeInput);
 
             // Cria a nova tarefa com todos os atributos
             Tarefa tarefa = new Tarefa(-1, nome, dataCriacao, dataConclusao, status, prioridade, idCategoria);
@@ -191,7 +195,8 @@ public class VisaoTarefas {
         } else {
             System.out.println("Lista de Tarefas:");
             for (Tarefa tarefa : tarefas) {
-                System.out.println("ID: " + tarefa.getId() + " - Nome: " + tarefa.getNome());
+                System.out.println("- Tarefa(s): \n" + tarefa.toString());
+                //System.out.println("ID: " + tarefa.getId() + " - Nome: " + tarefa.getNome());
             }
         }
     }
