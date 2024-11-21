@@ -43,8 +43,9 @@ public class ControleCategorias {
         for (Categoria categoria : categorias) {
             System.out.println("\nCategoria: " + categoria.getNome() +"\n");
             ArrayList<Tarefa> tarefas = arquivoTarefas.buscarPorCategoria(categoria.getId());
+            System.out.println("- Tarefa(s): \n");
             for (Tarefa tarefa : tarefas) {
-                System.out.println("- Tarefa(s): \n" + tarefa.toString());
+                System.out.println(tarefa.toString());
             }
         }
     }
