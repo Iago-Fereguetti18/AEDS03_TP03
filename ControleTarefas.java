@@ -6,13 +6,13 @@ public class ControleTarefas {
     private ControleIndiceInvertido controleIndiceInvertido;
     private ArquivoRotulos arquivoRotulos;
 
-    public ControleTarefas(ArquivoTarefas arquivoTarefas, ArquivoCategorias arquivoCategorias, ArquivoRotulos arquivoRotulos) throws Exception {
+    public ControleTarefas(ArquivoTarefas arquivoTarefas, ArquivoCategorias arquivoCategorias,
+            ArquivoRotulos arquivoRotulos) throws Exception {
         this.arquivoTarefas = arquivoTarefas;
         this.arquivoCategorias = arquivoCategorias;
         this.arquivoRotulos = arquivoRotulos; // Inicializa corretamente o atributo
         this.controleIndiceInvertido = new ControleIndiceInvertido();
     }
-    
 
     // Método para adicionar uma nova tarefa
     public boolean adicionarTarefa(Tarefa tarefa) throws Exception {
@@ -38,22 +38,9 @@ public class ControleTarefas {
 
     // Método para excluir uma tarefa
     public boolean excluirTarefa(int idTarefa) throws Exception {
-        // Verifica se há rótulos associados
-        ArrayList<Rotulo> rotulosAssociados = arquivoRotulos.buscarRotulosPorTarefa(idTarefa);
-        if (!rotulosAssociados.isEmpty()) {
-            // Chama o método que gerencia a exclusão completa
-            return excluirTarefaComAssociacoes(idTarefa);
-        }
-
-        // Exclusão simples se não houver associações
-        Tarefa tarefa = arquivoTarefas.read(idTarefa);
-        boolean excluido = arquivoTarefas.delete(idTarefa);
-        if (excluido) {
-            controleIndiceInvertido.removerDoIndice(idTarefa, tarefa.getNome());
-        }
-
-        return excluido;
+        return arquivoTarefas.delete(idTarefa);
     }
+    
 
     // Método para listar todas as tarefas
     public ArrayList<Tarefa> listarTodasTarefas() throws Exception {

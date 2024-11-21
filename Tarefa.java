@@ -1,3 +1,4 @@
+
 /**
  * A classe Tarefa representa uma tarefa com atributos como id, nome, data de criação,
  * data de conclusão, status e prioridade. A classe implementa a interface Registro,
@@ -37,48 +38,64 @@
  * - compareTo(Object p): Compara a tarefa com outra tarefa com base no id.
  */
 
- 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import aed3.Registro;
+
 // as classes e métodos envolve um texto explicativo
 public class Tarefa implements Registro {
 
     int id;
+
+    // chave estrangeira
+    int idCategoria;
+    private ArrayList<Integer> idsRotulos = new ArrayList<>(); // IDs dos rótulos associados
+
     String nome;
     LocalDate dataCriacao;
     LocalDate dataConclusao;
     byte status; // 0 - Pendente, 1 - Em Progresso, 2 - Concluída
     byte prioridade; // 0 - Baixa, 1 - Média, 2 - Alta
-    int idCategoria;
 
     // ================== Construtores ==================
     public Tarefa() {
-        this(-1, "", LocalDate.of(1970, 1, 1), LocalDate.of(1970, 1, 1), (byte)1, (byte)2, -1);
+        this(-1,
+                "",
+                LocalDate.of(1970, 1, 1),
+                LocalDate.of(1970, 1, 1),
+                (byte) 1,
+                (byte) 2,
+                -1,
+                new ArrayList<>());
     }
 
-    // Construtor que inicializa apenas id, nome e idCategoria
-    public Tarefa(int id, String nome, int idCategoria) {
+    // Construtor que inicializa apenas id, nome, idCategoria e idsRotulos
+    public Tarefa(int id, String nome, int idCategoria, ArrayList<Integer> idsRotulos) {
         this.id = id;
         this.nome = nome;
         this.idCategoria = idCategoria;
+        this.idsRotulos = new ArrayList<>(idsRotulos); // Clona a lista para evitar problemas com referências externas
         this.dataCriacao = LocalDate.now(); // Define dataCriacao como a data atual
         this.dataConclusao = LocalDate.now(); // Ainda não concluída
-        this.status = 0;                // Status padrão: Pendente
-        this.prioridade = 0;            // Prioridade padrão: Baixa
+        this.status = 0; // Status padrão: Pendente
+        this.prioridade = 0; // Prioridade padrão: Baixa
     }
 
-    public Tarefa (String nome, LocalDate dataCriacao, LocalDate dataConclusao, byte status, byte prioridade, int idCategoria) {
-        this(-1, nome, dataCriacao, dataConclusao, status, prioridade, idCategoria);
-        
+    // Construtor com todos os atributos, exceto o ID
+    public Tarefa(String nome, LocalDate dataCriacao, LocalDate dataConclusao, byte status, byte prioridade,
+            int idCategoria, ArrayList<Integer> idsRotulos) {
+        this(-1, nome, dataCriacao, dataConclusao, status, prioridade, idCategoria, idsRotulos);
     }
 
-    public Tarefa(int id, String nome, LocalDate dataCriacao, LocalDate dataConclusao, byte status, byte prioridade, int idCategoria) {
+    // Construtor com todos os atributos
+    public Tarefa(int id, String nome, LocalDate dataCriacao, LocalDate dataConclusao, byte status, byte prioridade,
+            int idCategoria, ArrayList<Integer> idsRotulos) {
         this.id = id;
         this.nome = nome;
         this.dataCriacao = dataCriacao;
@@ -86,11 +103,11 @@ public class Tarefa implements Registro {
         this.status = status;
         this.prioridade = prioridade;
         this.idCategoria = idCategoria;
+        this.idsRotulos = new ArrayList<>(idsRotulos); // Clona a lista para garantir imutabilidade externa
     }
 
     // ================== Getters e Setters ==================
-    // descreva os métodos getters e setters e os métodos de manipulação de arquivos
-    
+
     public void setId(int id) {
         this.id = id;
     }
@@ -139,14 +156,20 @@ public class Tarefa implements Registro {
         return prioridade;
     }
 
-    public void setIdCategoria(int id)
-    {
+    public void setIdCategoria(int id) {
         this.idCategoria = id;
     }
 
-    public int getIdCategoria()
-    {
+    public int getIdCategoria() {
         return idCategoria;
+    }
+
+    public void setIDsRotulos(ArrayList<Integer> idsRotulos) {
+        this.idsRotulos = idsRotulos;
+    }
+
+    public ArrayList<Integer> getIDsRotulos() {
+        return idsRotulos;
     }
 
     // ================== Métodos ==================
@@ -157,16 +180,21 @@ public class Tarefa implements Registro {
         DataOutputStream dos = new DataOutputStream(baos);
         dos.writeInt(this.id);
         dos.writeUTF(this.nome);
-        dos.writeInt((int)this.dataCriacao.toEpochDay());
-        dos.writeInt((int)this.dataConclusao.toEpochDay());
+        dos.writeInt((int) this.dataCriacao.toEpochDay());
+        dos.writeInt((int) this.dataConclusao.toEpochDay());
         dos.writeByte(this.status);
         dos.writeByte(this.prioridade);
         dos.writeInt(this.idCategoria);
 
+        // Serializa o ArrayList de IDs de Rótulos
+        dos.writeInt(this.idsRotulos.size()); // Escreve o número de rótulos
+        for (int idRotulo : this.idsRotulos) {
+            dos.writeInt(idRotulo); // Escreve cada ID de rótulo
+        }
+
         return baos.toByteArray();
     }
 
-    
     public void fromByteArray(byte[] b) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(b);
         DataInputStream dis = new DataInputStream(bais);
@@ -177,22 +205,29 @@ public class Tarefa implements Registro {
         this.status = dis.readByte();
         this.prioridade = dis.readByte();
         this.idCategoria = dis.readInt();
+
+        // Desserializa o ArrayList de IDs de Rótulos
+        int numRotulos = dis.readInt(); // Lê o número de rótulos
+        this.idsRotulos = new ArrayList<>(); // Inicializa a lista
+        for (int i = 0; i < numRotulos; i++) {
+            this.idsRotulos.add(dis.readInt()); // Lê cada ID de rótulo e adiciona à lista
+        }
     }
 
-    
+    @Override
     public String toString() {
-        return "\nID:..............: " + this.id + 
-             "\nNome:............: " + this.nome + 
-             "\nData de Criação..: " + this.dataCriacao + 
-             "\nData de Conclusão: " + this.dataConclusao + 
-             "\nStatus...........: " + this.status + 
-             "\nPrioridade.......: " + this.prioridade +
-             "\nID Categoria.....: " + this.idCategoria;
+        return "\nID:..............: " + this.id +
+                "\nNome:............: " + (this.nome != null ? this.nome : "Sem Nome") +
+                "\nData de Criação..: " + (this.dataCriacao != null ? this.dataCriacao : "Não Definida") +
+                "\nData de Conclusão: " + (this.dataConclusao != null ? this.dataConclusao : "Não Definida") +
+                "\nStatus...........: " + this.status +
+                "\nPrioridade.......: " + this.prioridade +
+                "\nID Categoria.....: " + this.idCategoria +
+                "\nID Rótulo........: " + (this.idsRotulos != null ? this.idsRotulos : "Sem Rótulos");
     }
 
-    
     public int compareTo(Object p) {
-        return this.id - ((Tarefa)p).id;
+        return this.id - ((Tarefa) p).id;
     }
 
 }

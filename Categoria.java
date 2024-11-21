@@ -10,7 +10,7 @@ public class Categoria implements Registro {
     
     private int id;
     private String nome;
-    //private boolean excluido = false; // Campo para exclusão lógica
+    
 
     // Construtor padrão
     public Categoria() {

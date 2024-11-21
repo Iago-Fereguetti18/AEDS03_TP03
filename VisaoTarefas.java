@@ -5,13 +5,17 @@ import java.util.Scanner;
 public class VisaoTarefas {
     private ControleTarefas controleTarefas;
     private ControleCategorias controleCategorias;
+    private ControleRotulos controleRotulos;
+
     private Scanner scanner;
 
-    public VisaoTarefas(ControleTarefas controleTarefas, ControleCategorias controleCategorias) {
+    public VisaoTarefas(ControleTarefas controleTarefas, ControleCategorias controleCategorias, ControleRotulos controleRotulos) {
         this.controleTarefas = controleTarefas;
         this.controleCategorias = controleCategorias;
+        this.controleRotulos = controleRotulos; // Inicializa o controle de rótulos
         this.scanner = new Scanner(System.in);
     }
+    
 
     public void menu() throws Exception {
         int opcao;
@@ -147,59 +151,80 @@ public class VisaoTarefas {
     private void adicionarTarefa() throws Exception {
         System.out.print("Nome da Tarefa: ");
         String nome = scanner.nextLine();
-
+    
         // Listar categorias para seleção
         System.out.println("Escolha uma categoria:");
         ArrayList<Categoria> categorias = controleCategorias.listarTodasCategorias();
         for (int i = 0; i < categorias.size(); i++) {
             System.out.println("\t(" + (i + 1) + ") " + categorias.get(i).getNome());
         }
-
+    
         System.out.print("Opção: ");
         int escolhaCategoria;
         try {
             escolhaCategoria = scanner.nextInt();
             scanner.nextLine(); // Limpar o buffer
-
+    
             // Verificar se a escolha está dentro do limite
             if (escolhaCategoria < 1 || escolhaCategoria > categorias.size()) {
                 throw new IndexOutOfBoundsException("Opção fora do limite.");
             }
+    
             // Mapeia a escolha do usuário para o ID real da categoria
             int idCategoria = categorias.get(escolhaCategoria - 1).getId();
-
+    
+            // Seleção de rótulos
+            System.out.println("Escolha os rótulos para a tarefa (digite os números separados por vírgulas, ou Enter para nenhum):");
+            ArrayList<Rotulo> rotulos = controleRotulos.listarTodosRotulos();
+            for (int i = 0; i < rotulos.size(); i++) {
+                System.out.println("\t(" + (i + 1) + ") " + rotulos.get(i).getRotulo());
+            }
+    
+            System.out.print("Opção: ");
+            String escolhaRotulos = scanner.nextLine();
+            ArrayList<Integer> idsRotulos = new ArrayList<>();
+    
+            if (!escolhaRotulos.isBlank()) {
+                String[] indices = escolhaRotulos.split(",");
+                for (String indice : indices) {
+                    int escolha = Integer.parseInt(indice.trim());
+                    if (escolha < 1 || escolha > rotulos.size()) {
+                        throw new IndexOutOfBoundsException("Opção de rótulo fora do limite.");
+                    }
+                    idsRotulos.add(rotulos.get(escolha - 1).getId());
+                }
+            }
+    
             // Solicitar outros atributos
-            
             System.out.print("Data de criação (formato: YYYY-MM-DD ou Enter para data atual): ");
             String dataCriacaoInput = scanner.nextLine();
             LocalDate dataCriacao = dataCriacaoInput.isBlank() ? LocalDate.now() : LocalDate.parse(dataCriacaoInput);
-        
+    
             System.out.print("Data de conclusão (formato: YYYY-MM-DD ou Enter para indefinida): ");
             String dataConclusaoInput = scanner.nextLine();
             LocalDate dataConclusao = dataConclusaoInput.isBlank() ? LocalDate.of(1970, 1, 1) : LocalDate.parse(dataConclusaoInput);
-        
+    
             System.out.print("Status (0 - Pendente, 1 - Em Progresso, 2 - Concluída ou Enter para padrão [Pendente]): ");
             String statusInput = scanner.nextLine();
             byte status = statusInput.isBlank() ? 0 : Byte.parseByte(statusInput);
-        
+    
             System.out.print("Prioridade (0 - Baixa, 1 - Média, 2 - Alta ou Enter para padrão [Baixa]): ");
             String prioridadeInput = scanner.nextLine();
             byte prioridade = prioridadeInput.isBlank() ? 0 : Byte.parseByte(prioridadeInput);
-
-            // Cria a nova tarefa com todos os atributos
-            Tarefa tarefa = new Tarefa(-1, nome, dataCriacao, dataConclusao, status, prioridade, idCategoria);
+    
+            // Cria a nova tarefa com todos os atributos, incluindo os IDs dos rótulos
+            Tarefa tarefa = new Tarefa(-1, nome, dataCriacao, dataConclusao, status, prioridade, idCategoria, idsRotulos);
             if (controleTarefas.adicionarTarefa(tarefa)) {
                 System.out.println("Tarefa adicionada com sucesso!");
             } else {
                 System.out.println("Erro ao adicionar tarefa.");
             }
-
+    
         } catch (Exception e) {
-            System.out.println("Opção inválida.");
-            return;
+            System.out.println("Erro: " + e.getMessage());
         }
-
     }
+    
 
     private void excluirTarefa() throws Exception {
         ArrayList<Tarefa> tarefas = controleTarefas.listarTodasTarefas();

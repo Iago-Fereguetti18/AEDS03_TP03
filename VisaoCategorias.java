@@ -55,41 +55,42 @@ public class VisaoCategorias {
             }
         } while (opcao != 0);
     }
+
     private void atualizarCategoria() throws Exception {
         // Listar as categorias disponíveis
         ArrayList<Categoria> categorias = controleCategorias.listarTodasCategorias();
-    
+
         if (categorias.isEmpty()) {
             System.out.println("Nenhuma categoria encontrada para atualizar.");
             return;
         }
-    
+
         // Exibir as categorias para o usuário escolher
         System.out.println("Escolha a categoria que deseja atualizar:");
         for (int i = 0; i < categorias.size(); i++) {
             System.out.println("\t(" + (i + 1) + ") " + categorias.get(i).getNome());
         }
-    
+
         System.out.print("Opção: ");
         int escolha = scanner.nextInt();
         scanner.nextLine(); // Limpar o buffer
-    
+
         if (escolha < 1 || escolha > categorias.size()) {
             System.out.println("Opção inválida.");
             return;
         }
-    
+
         Categoria categoriaSelecionada = categorias.get(escolha - 1);
-    
+
         // Solicitar novos dados para a categoria
         System.out.println("Atualizando a categoria: " + categoriaSelecionada.getNome());
-    
+
         System.out.print("Novo nome (ou Enter para manter o mesmo): ");
         String novoNome = scanner.nextLine();
         if (!novoNome.isBlank()) {
             categoriaSelecionada.setNome(novoNome);
         }
-    
+
         // Atualiza a categoria no controle
         if (controleCategorias.atualizarCategoria(categoriaSelecionada)) {
             System.out.println("Categoria atualizada com sucesso!");
@@ -97,7 +98,7 @@ public class VisaoCategorias {
             System.out.println("Erro ao atualizar a categoria.");
         }
     }
-    
+
     private void adicionarCategoria() throws Exception {
         System.out.print("Nome da nova categoria: ");
         String nome = scanner.nextLine();
@@ -117,28 +118,31 @@ public class VisaoCategorias {
             return;
         }
 
-        // Exibe as categorias com numeração sequencial
         System.out.println("Escolha a categoria a ser excluída:");
         for (int i = 0; i < categorias.size(); i++) {
-            System.out.println("\t("+(i + 1) + ") " + categorias.get(i).getNome());
+            System.out.println("\t(" + (i + 1) + ") " + categorias.get(i).getNome());
         }
 
-        System.out.print("Opção: ");
-        int escolha = scanner.nextInt();
-        scanner.nextLine(); // Limpar o buffer
+        try {
+            System.out.print("Opção: ");
+            String escolhaStr = scanner.nextLine();
+            int escolha;
+            try {
+                escolha = Integer.parseInt(escolhaStr);
+            } catch (NumberFormatException e) {
+                System.out.println("Entrada inválida. Por favor, insira um número válido.");
+                return;
+            }
 
-        // Valida a escolha do usuário
-        if (escolha < 1 || escolha > categorias.size()) {
-            System.out.println("Opção inválida.");
-            return;
-        }
-
-        // Mapeia a escolha para o ID real da categoria
-        int idCategoria = categorias.get(escolha - 1).getId();
-        if (controleCategorias.excluirCategoria(idCategoria)) {
-            System.out.println("Categoria excluída com sucesso!");
-        } else {
-            System.out.println("Não foi possível excluir a categoria.");
+            int idCategoria = categorias.get(escolha - 1).getId();
+            if (controleCategorias.excluirCategoria(idCategoria)) {
+                System.out.println("Categoria excluída com sucesso!");
+            } else {
+                System.out.println("Não foi possível excluir a categoria.");
+            }
+        } catch (Exception e) {
+            System.out.println("Entrada inválida. Por favor, insira um número válido.");
+            scanner.nextLine(); // Limpar o buffer em caso de erro
         }
     }
 

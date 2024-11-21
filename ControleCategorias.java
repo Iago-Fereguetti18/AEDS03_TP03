@@ -14,16 +14,16 @@ public class ControleCategorias {
         // Verifica se já existe uma categoria com o mesmo nome usando o índice
         ArrayList<Categoria> categoriasExistentes = arquivoCategorias.buscarPorNome(categoria.getNome());
         if (!categoriasExistentes.isEmpty()) {
-            System.out.println("Categoria com o nome '" + categoria.getNome() + "' já existe. Não é possível criar duplicatas.");
+            System.out.println(
+                    "Categoria com o nome '" + categoria.getNome() + "' já existe. Não é possível criar duplicatas.");
             return false; // Impede a criação da categoria
         }
-    
+
         // Se não houver duplicata, cria a nova categoria
         arquivoCategorias.create(categoria);
         return true;
     }
-    
-    
+
     // Método para excluir uma categoria somente se não houver tarefas associadas
     public boolean excluirCategoria(int idCategoria) throws Exception {
         ArrayList<Tarefa> tarefas = arquivoTarefas.buscarPorCategoria(idCategoria);
@@ -42,9 +42,8 @@ public class ControleCategorias {
         for (Categoria categoria : categorias) {
             System.out.println("\nCategoria: " + categoria.getNome() +"\n");
             ArrayList<Tarefa> tarefas = arquivoTarefas.buscarPorCategoria(categoria.getId());
-            System.out.println("- Tarefa(s): \n");
             for (Tarefa tarefa : tarefas) {
-                System.out.println(tarefa.toString());
+                System.out.println("- Tarefa(s): \n" + tarefa.toString());
             }
         }
     }
@@ -56,5 +55,5 @@ public class ControleCategorias {
     public boolean atualizarCategoria(Categoria categoria) throws Exception {
         return arquivoCategorias.update(categoria);
     }
-    
+
 }

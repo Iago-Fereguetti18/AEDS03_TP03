@@ -5,21 +5,23 @@ public class IO {
     public static void main(String[] args) {
 
         try {
-            // Inicializa arquivos para categorias e tarefas
+            // Inicializa arquivos para categorias, tarefas e rótulos
             ArquivoCategorias arquivoCategorias = new ArquivoCategorias(Categoria.class.getConstructor(), "categorias");
             ArquivoTarefas arquivoTarefas = new ArquivoTarefas(Tarefa.class.getConstructor(), "tarefas");
             ArquivoRotulos arquivoRotulos = new ArquivoRotulos(Rotulo.class.getConstructor(), "rotulos");
 
-            // Inicializa os controles para categorias e tarefas
+            // Inicializa os controles para categorias, tarefas e rótulos
             ControleCategorias controleCategorias = new ControleCategorias(arquivoCategorias, arquivoTarefas);
             ControleTarefas controleTarefas = new ControleTarefas(arquivoTarefas, arquivoCategorias, arquivoRotulos);
+            ControleRotulos controleRotulos = new ControleRotulos(arquivoRotulos, arquivoTarefas);
 
             // Passa os controles para as visões
             VisaoCategorias visaoCategorias = new VisaoCategorias(controleCategorias, controleTarefas);
-            VisaoTarefas visaoTarefas = new VisaoTarefas(controleTarefas, controleCategorias);
+            VisaoTarefas visaoTarefas = new VisaoTarefas(controleTarefas, controleCategorias, controleRotulos);
+            VisaoRotulos visaoRotulos = new VisaoRotulos(controleRotulos, controleTarefas);
 
             Scanner scanner = new Scanner(System.in);
-            
+
             int opcao;
             do {
                 System.out.println("\nPUCBOOK 1.0");
@@ -27,6 +29,7 @@ public class IO {
                 System.out.println("> INÍCIO ");
                 System.out.println("\t1. Gerenciar Categorias");
                 System.out.println("\t2. Gerenciar Tarefas");
+                System.out.println("\t3. Gerenciar Rótulos");
                 System.out.println("\t0. Sair");
                 System.out.print("\tEscolha uma opção: ");
                 opcao = scanner.nextInt();
@@ -38,6 +41,9 @@ public class IO {
                         break;
                     case 2:
                         visaoTarefas.menu();
+                        break;
+                    case 3:
+                        visaoRotulos.exibirMenu();
                         break;
                     case 0:
                         System.out.println("Saindo...");

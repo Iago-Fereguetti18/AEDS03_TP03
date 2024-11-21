@@ -13,11 +13,11 @@ import java.util.Collections;
 
 public class Arquivo<T extends Registro> {
 
-    RandomAccessFile arquivo;
-    String nomeArquivo;
-    final int TAM_CABECALHO = 4;
-    Constructor<T> construtor;
-    HashExtensivel<ParIDEndereco> indiceDireto;
+    protected RandomAccessFile arquivo;
+    protected String nomeArquivo;
+    protected final int TAM_CABECALHO = 4;
+    protected Constructor<T> construtor;
+    protected HashExtensivel<ParIDEndereco> indiceDireto;
 
     // ----------------------------- Construtor -----------------------------//
     public Arquivo(Constructor<T> c, String n) throws Exception {
@@ -40,6 +40,47 @@ public class Arquivo<T extends Registro> {
         );
 
     }
+
+    protected RandomAccessFile getArquivo() {
+        return this.arquivo;
+    }
+    
+    public ArrayList<T> list() throws Exception {
+        ArrayList<T> objects = new ArrayList<>(); // Lista para armazenar os objetos
+        try {
+            // Posiciona o ponteiro no início do arquivo, logo após o cabeçalho
+            arquivo.seek(TAM_CABECALHO);
+    
+            while (arquivo.getFilePointer() < arquivo.length()) {
+                // Lê a lápide para verificar se o registro está ativo
+                byte lapide = arquivo.readByte();
+                short tamanho = arquivo.readShort(); // Lê o tamanho do registro
+    
+                if (lapide == ' ') { // Registro ativo (não excluído)
+                    byte[] dados = new byte[tamanho];
+                    arquivo.read(dados);
+    
+                    // Reconstrói o objeto a partir do array de bytes
+                    T obj = construtor.newInstance();
+                    obj.fromByteArray(dados);
+    
+                    // Adiciona o objeto à lista
+                    objects.add(obj);
+                } else {
+                    // Pula o registro excluído
+                    arquivo.skipBytes(tamanho);
+                }
+            }
+        } catch (EOFException e) {
+            // Fim do arquivo atingido
+        } catch (Exception e) {
+            System.out.println("Erro ao listar os registros.");
+            e.printStackTrace();
+        }
+    
+        return objects; // Retorna a lista de objetos
+    }
+    
 
     // ----------------------------- Create -----------------------------//
     public void create(T entidade) throws Exception {
@@ -442,5 +483,7 @@ public class Arquivo<T extends Registro> {
         (new File(".\\dados\\temp6.db")).delete();
 
     }
+
+    
 
 }

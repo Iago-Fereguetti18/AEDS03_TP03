@@ -20,6 +20,12 @@ public class ArquivoCategorias extends Arquivo<Categoria> {
     // Método para criar uma nova categoria no arquivo e no índice por nome
     @Override
     public void create(Categoria categoria) throws Exception {
+        ArrayList<Categoria> categoriasExistentes = this.list();
+        for (Categoria c : categoriasExistentes) {
+            if (c.getNome().equalsIgnoreCase(categoria.getNome())) {
+                throw new Exception("Categoria com o mesmo nome já existe.");
+            }
+        }
         super.create(categoria);
         // Adiciona ao índice por nome com o par nome-ID
         indiceNomeCategoria.create(new ParNomeId(categoria.getNome(), categoria.getId()));

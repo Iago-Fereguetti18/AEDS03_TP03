@@ -6,7 +6,7 @@ import java.lang.reflect.Constructor;
 public class ArquivoTarefas extends Arquivo<Tarefa> {
 
     private ArvoreBMais<ParIdId> indiceCategoriaTarefa;
-    
+
     // Construtor que inicializa o arquivo de tarefas e o índice para o
     // relacionamento 1:N
     public ArquivoTarefas(Constructor<Tarefa> construtor, String nomeArquivo) throws Exception {
@@ -15,17 +15,21 @@ public class ArquivoTarefas extends Arquivo<Tarefa> {
                 "dados/arvoreTarefasPorCategoria.db");
     }
 
-    // Método para criar uma nova tarefa no arquivo e no índice 1:N
     @Override
     public void create(Tarefa tarefa) throws Exception {
-        super.create(tarefa);
-        indiceCategoriaTarefa.create(new ParIdId(tarefa.getIdCategoria(), tarefa.getId()));
-    }
+        // Verifica duplicidade
+        ArrayList<Tarefa> tarefasExistentes = this.list();
+        for (Tarefa t : tarefasExistentes) {
+            if (t.getNome().equalsIgnoreCase(tarefa.getNome())) {
+                throw new Exception("Tarefa com o mesmo nome já existe.");
+            }
+        }
 
-    // Método para ler uma tarefa pelo ID
-    @Override
-    public Tarefa read(int id) throws Exception {
-        return super.read(id);
+        // Salva a tarefa no arquivo principal
+        super.create(tarefa);
+
+        // Atualiza o índice 1:N
+        indiceCategoriaTarefa.create(new ParIdId(tarefa.getIdCategoria(), tarefa.getId()));
     }
 
     // Método para atualizar uma tarefa existente
@@ -43,48 +47,39 @@ public class ArquivoTarefas extends Arquivo<Tarefa> {
         return false;
     }
 
-    // Método para excluir uma tarefa pelo ID e atualizar o índice 1:N
     @Override
     public boolean delete(int id) throws Exception {
-        Tarefa tarefa = read(id);
-        if (tarefa != null) {
-            indiceCategoriaTarefa.delete(new ParIdId(tarefa.getIdCategoria(), id));
-            return super.delete(id);
+        Tarefa tarefa = super.read(id);
+        if (tarefa == null) {
+            System.out.println("Erro: Registro não encontrado no arquivo para exclusão.");
+            return false;
         }
-        return false;
+
+        long posicao = arquivo.getFilePointer() - (1 + 2 + tarefa.toByteArray().length); // Reposiciona para a lápide
+        arquivo.seek(posicao);
+        arquivo.writeByte('*'); // Marca o registro como excluído
+
+        // Remove do índice direto
+        indiceDireto.delete(id);
+        System.out.println("Tarefa removida do índice e marcada como excluída.");
+        return true;
     }
 
-    // Método para buscar todas as tarefas por categoria
     public ArrayList<Tarefa> buscarPorCategoria(int idCategoria) throws Exception {
-        ArrayList<Tarefa> tarefas = new ArrayList<>();
-        ArrayList<ParIdId> pares = indiceCategoriaTarefa.read(new ParIdId(idCategoria, -1));
-        for (ParIdId par : pares) {
-            Tarefa tarefa = read(par.getId2());
-            if (tarefa != null) {
-                tarefas.add(tarefa);
+        ArrayList<Tarefa> tarefasAssociadas = new ArrayList<>();
+        ArrayList<Tarefa> todasTarefas = list(); // Lista todas as tarefas
+
+        for (Tarefa tarefa : todasTarefas) {
+            if (tarefa.getIdCategoria() == idCategoria) { // Verifica se a tarefa pertence à categoria
+                tarefasAssociadas.add(tarefa);
             }
         }
-        return tarefas;
+
+        return tarefasAssociadas;
     }
 
     public ArrayList<Tarefa> listarTodasTarefas() throws Exception {
-        ArrayList<Tarefa> tarefas = new ArrayList<>();
-        int id = 0;
-        int contagemNulls = 0; // Contador de consecutivos nulos
-        int limiteNulls = 10;  // Limite de nulls consecutivos antes de parar
-    
-        while (contagemNulls < limiteNulls) {
-            Tarefa tarefa = read(id);
-            if (tarefa != null) {
-                tarefas.add(tarefa);
-                contagemNulls = 0; // Resetar contador de nulls ao encontrar uma tarefa válida
-            } else {
-                contagemNulls++;
-            }
-            id++;
-        }
-    
-        return tarefas;
+        return super.list(); // Usa o método `list()` já implementado na superclasse `Arquivo`
     }
-    
+
 }
