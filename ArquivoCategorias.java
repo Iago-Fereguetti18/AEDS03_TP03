@@ -28,7 +28,7 @@ public class ArquivoCategorias extends Arquivo<Categoria> {
     // // Método para ler uma categoria pelo ID
     // @Override
     // public Categoria read(int id) throws Exception {
-    //     return super.read(id);
+    // return super.read(id);
     // }
 
     // Método para atualizar uma categoria existente
@@ -51,10 +51,7 @@ public class ArquivoCategorias extends Arquivo<Categoria> {
     public boolean delete(int id) throws Exception {
         Categoria categoria = read(id);
         if (categoria != null) {
-            // Marcação lógica
-            //categoria.setExcluido(true);
-            update(categoria); // Atualiza para salvar a marcação de exclusão
-
+      
             // Remover do índice por nome e exclusão física
             indiceNomeCategoria.delete(new ParNomeId(categoria.getNome(), id));
             return super.delete(id); // Exclusão física no armazenamento
@@ -82,27 +79,26 @@ public class ArquivoCategorias extends Arquivo<Categoria> {
         return categorias;
     }
 
- // Método para listar todas as categorias usando a árvore B+
-public ArrayList<Categoria> listarTodasCategorias() throws Exception {
-    ArrayList<Categoria> categorias = new ArrayList<>();
+    // Método para listar todas as categorias usando a árvore B+
+    public ArrayList<Categoria> listarTodasCategorias() throws Exception {
+        ArrayList<Categoria> categorias = new ArrayList<>();
 
-    // Busca todas as entradas na árvore B+
-    ArrayList<ParNomeId> pares = indiceNomeCategoria.read(null);
+        // Busca todas as entradas na árvore B+
+        ArrayList<ParNomeId> pares = indiceNomeCategoria.read(null);
 
-    // Itera pelos pares para recuperar as categorias correspondentes
-    for (ParNomeId par : pares) {
-        Categoria categoria = read(par.getId());
-        if (categoria != null) { // Ignora categorias excluídas
-            categoria.setNome(formatarNome(categoria.getNome()));
-            categorias.add(categoria);
+        // Itera pelos pares para recuperar as categorias correspondentes
+        for (ParNomeId par : pares) {
+            Categoria categoria = read(par.getId());
+            if (categoria != null) { // Ignora categorias excluídas
+                categoria.setNome(formatarNome(categoria.getNome()));
+                categorias.add(categoria);
+            }
         }
+
+        // Ordena as categorias por nome (não é estritamente necessário, pois a B+ já mantém a ordem)
+        categorias.sort(Comparator.comparing(Categoria::getNome));
+        return categorias;
     }
-
-    // Ordena as categorias por nome (não é estritamente necessário, pois a B+ já mantém a ordem)
-    categorias.sort(Comparator.comparing(Categoria::getNome));
-    return categorias;
-}
-
 
     // Método auxiliar para formatar o nome com a primeira letra maiúscula e o restante minúsculo
     private String formatarNome(String nome) {

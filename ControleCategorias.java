@@ -24,7 +24,6 @@ public class ControleCategorias {
     }
     
     
-
     // Método para excluir uma categoria somente se não houver tarefas associadas
     public boolean excluirCategoria(int idCategoria) throws Exception {
         ArrayList<Tarefa> tarefas = arquivoTarefas.buscarPorCategoria(idCategoria);

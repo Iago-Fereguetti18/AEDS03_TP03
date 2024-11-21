@@ -8,17 +8,18 @@ public class IO {
             // Inicializa arquivos para categorias e tarefas
             ArquivoCategorias arquivoCategorias = new ArquivoCategorias(Categoria.class.getConstructor(), "categorias");
             ArquivoTarefas arquivoTarefas = new ArquivoTarefas(Tarefa.class.getConstructor(), "tarefas");
+            ArquivoRotulos arquivoRotulos = new ArquivoRotulos(Rotulo.class.getConstructor(), "rotulos");
 
             // Inicializa os controles para categorias e tarefas
             ControleCategorias controleCategorias = new ControleCategorias(arquivoCategorias, arquivoTarefas);
-            ControleTarefas controleTarefas = new ControleTarefas(arquivoTarefas, arquivoCategorias);
+            ControleTarefas controleTarefas = new ControleTarefas(arquivoTarefas, arquivoCategorias, arquivoRotulos);
 
             // Passa os controles para as visões
             VisaoCategorias visaoCategorias = new VisaoCategorias(controleCategorias, controleTarefas);
             VisaoTarefas visaoTarefas = new VisaoTarefas(controleTarefas, controleCategorias);
 
             Scanner scanner = new Scanner(System.in);
-
+            
             int opcao;
             do {
                 System.out.println("\nPUCBOOK 1.0");
