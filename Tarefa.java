@@ -216,14 +216,13 @@ public class Tarefa implements Registro {
 
     @Override
     public String toString() {
-        return "\nID:..............: " + this.id +
-                "\nNome:............: " + (this.nome != null ? this.nome : "Sem Nome") +
-                "\nData de Criação..: " + (this.dataCriacao != null ? this.dataCriacao : "Não Definida") +
-                "\nData de Conclusão: " + (this.dataConclusao != null ? this.dataConclusao : "Não Definida") +
-                "\nStatus...........: " + this.status +
-                "\nPrioridade.......: " + this.prioridade +
-                "\nID Categoria.....: " + this.idCategoria +
-                "\nID Rótulo........: " + (this.idsRotulos != null ? this.idsRotulos : "Sem Rótulos");
+        return "\nID:................: " + this.id +
+                "\nNome:..............: " + (this.nome != null ? this.nome : "Sem Nome") +
+                "\nData de Criação....: " + (this.dataCriacao != null ? this.dataCriacao : "Não Definida") +
+                "\nData de Conclusão..: " + (this.dataConclusao != null ? this.dataConclusao : "Não Definida") +
+                "\nStatus.............: " + this.status +
+                "\nPrioridade.........: " + this.prioridade +
+                "\nID Categoria.......: " + this.idCategoria;
     }
 
     public int compareTo(Object p) {

@@ -8,6 +8,7 @@ public class ArquivoRotulos extends Arquivo<Rotulo> {
     private ArvoreBMais<ParIdId> tarefaParaRotulo;
     private ArvoreBMais<ParIdId> rotuloParaTarefa;
 
+
     // Construtor
     public ArquivoRotulos(Constructor<Rotulo> construtor, String nomeArquivo) throws Exception {
         super(construtor, nomeArquivo);
@@ -15,6 +16,7 @@ public class ArquivoRotulos extends Arquivo<Rotulo> {
         // Inicializa as Árvores B+ para gerenciar o relacionamento N:N
         tarefaParaRotulo = new ArvoreBMais<>(ParIdId.class.getConstructor(), 5, "dados/tarefaParaRotulo.db");
         rotuloParaTarefa = new ArvoreBMais<>(ParIdId.class.getConstructor(), 5, "dados/rotuloParaTarefa.db");
+       
     }
 
     // Criar um novo rótulo

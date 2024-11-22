@@ -6,13 +6,33 @@ import java.lang.reflect.Constructor;
 public class ArquivoTarefas extends Arquivo<Tarefa> {
 
     private ArvoreBMais<ParIdId> indiceCategoriaTarefa;
+    private ArquivoRotulos arquivoRotulos;
 
     // Construtor que inicializa o arquivo de tarefas e o índice para o
     // relacionamento 1:N
-    public ArquivoTarefas(Constructor<Tarefa> construtor, String nomeArquivo) throws Exception {
+    public ArquivoTarefas(Constructor<Tarefa> construtor, String nomeArquivo, ArquivoRotulos arquivoRotulos)
+            throws Exception {
         super(construtor, nomeArquivo);
         indiceCategoriaTarefa = new ArvoreBMais<>(ParIdId.class.getConstructor(), 5,
                 "dados/arvoreTarefasPorCategoria.db");
+        this.arquivoRotulos = arquivoRotulos;
+    }
+
+    @Override
+    public Tarefa read(int id) throws Exception {
+        Tarefa tarefa = super.read(id); // Lê a tarefa usando o método genérico
+        if (tarefa != null) {
+            // Recupera os rótulos associados à tarefa
+            ArrayList<Rotulo> rotulosAssociados = arquivoRotulos.buscarRotulosPorTarefa(id);
+
+            // Atualiza a tarefa com os IDs dos rótulos associados
+            ArrayList<Integer> idsRotulos = new ArrayList<>();
+            for (Rotulo rotulo : rotulosAssociados) {
+                idsRotulos.add(rotulo.getId()); // Adiciona apenas o ID de cada rótulo
+            }
+            tarefa.setIDsRotulos(idsRotulos); // Atualiza o campo idsRotulos da tarefa
+        }
+        return tarefa;
     }
 
     @Override

@@ -77,7 +77,7 @@ public class ControleRotulos {
     // Remover associação entre rótulo e tarefa
     public void desassociarRotuloDeTarefa(int idTarefa, int idRotulo) throws Exception {
         // Verifica se a associação existe antes de remover
-        ArrayList<Rotulo> rotulosAssociados = listarRotulosPorTarefa(idTarefa);
+        ArrayList<Rotulo> rotulosAssociados = buscarRotulosPorTarefa(idTarefa);
         boolean encontrado = false;
 
         for (Rotulo rotulo : rotulosAssociados) {
@@ -110,8 +110,13 @@ public class ControleRotulos {
         return tarefas;
     }
 
-    // Listar rótulos associados a uma tarefa
-    public ArrayList<Rotulo> listarRotulosPorTarefa(int idTarefa) throws Exception {
+    public ArrayList<Rotulo> buscarRotulosPorTarefa(int idTarefa) throws Exception {
         return arquivoRotulos.buscarRotulosPorTarefa(idTarefa);
     }
+
+    public Rotulo buscarRotuloPorId(int idRotulo) throws Exception {
+        return arquivoRotulos.read(idRotulo);
+    }
+    
+    
 }

@@ -74,4 +74,25 @@ public class ControleTarefas {
         return arquivoRotulos.buscarRotulosPorTarefa(idTarefa);
     }
 
+    public void listarTarefasComRotulos() throws Exception {
+        ArrayList<Tarefa> tarefas = arquivoTarefas.listarTodasTarefas();
+    
+        for (Tarefa tarefa : tarefas) {
+            System.out.println("Tarefa:");
+            System.out.println(tarefa);
+    
+            // Buscar os rótulos associados
+            ArrayList<Rotulo> rotulos = arquivoRotulos.buscarRotulosPorTarefa(tarefa.getId());
+            if (!rotulos.isEmpty()) {
+                System.out.println("Rótulos associados:");
+                for (Rotulo rotulo : rotulos) {
+                    System.out.println("\t- " + rotulo.getRotulo());
+                }
+            } else {
+                System.out.println("Nenhum rótulo associado.");
+            }
+        }
+    }
+    
+
 }

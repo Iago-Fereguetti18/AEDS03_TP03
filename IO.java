@@ -7,8 +7,8 @@ public class IO {
         try {
             // Inicializa arquivos para categorias, tarefas e rótulos
             ArquivoCategorias arquivoCategorias = new ArquivoCategorias(Categoria.class.getConstructor(), "categorias");
-            ArquivoTarefas arquivoTarefas = new ArquivoTarefas(Tarefa.class.getConstructor(), "tarefas");
             ArquivoRotulos arquivoRotulos = new ArquivoRotulos(Rotulo.class.getConstructor(), "rotulos");
+            ArquivoTarefas arquivoTarefas = new ArquivoTarefas(Tarefa.class.getConstructor(), "tarefas", arquivoRotulos);
 
             // Inicializa os controles para categorias, tarefas e rótulos
             ControleCategorias controleCategorias = new ControleCategorias(arquivoCategorias, arquivoTarefas);

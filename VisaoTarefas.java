@@ -40,7 +40,7 @@ public class VisaoTarefas {
                     excluirTarefa();
                     break;
                 case 3:
-                    listarTarefas();
+                    listarTarefasComRotulos();
                     break;
                 case 4:
                     atualizarTarefa();
@@ -256,16 +256,38 @@ public class VisaoTarefas {
         }
     }
 
-    private void listarTarefas() throws Exception {
+    // private void listarTarefas() throws Exception {
+    //     ArrayList<Tarefa> tarefas = controleTarefas.listarTodasTarefas();
+    //     if (tarefas.isEmpty()) {
+    //         System.out.println("Nenhuma tarefa encontrada.");
+    //     } else {
+    //         System.out.println("Lista de Tarefas:");
+    //         for (Tarefa tarefa : tarefas) {
+    //             System.out.println("- Tarefa(s): \n" + tarefa.toString());
+    //             //System.out.println("ID: " + tarefa.getId() + " - Nome: " + tarefa.getNome());
+    //         }
+    //     }
+    // }
+
+    private void listarTarefasComRotulos() throws Exception {
         ArrayList<Tarefa> tarefas = controleTarefas.listarTodasTarefas();
-        if (tarefas.isEmpty()) {
-            System.out.println("Nenhuma tarefa encontrada.");
-        } else {
-            System.out.println("Lista de Tarefas:");
-            for (Tarefa tarefa : tarefas) {
-                System.out.println("- Tarefa(s): \n" + tarefa.toString());
-                //System.out.println("ID: " + tarefa.getId() + " - Nome: " + tarefa.getNome());
+    
+        for (Tarefa tarefa : tarefas) {
+            System.out.println("Tarefa:");
+            System.out.println(tarefa);
+    
+            // Buscar os rótulos associados
+            ArrayList<Rotulo> rotulos = controleRotulos.buscarRotulosPorTarefa(tarefa.getId());
+            if (!rotulos.isEmpty()) {
+                System.out.print("Rótulos associados.: [");
+                for (Rotulo rotulo : rotulos) {
+                    System.out.print(" \"" + rotulo.getRotulo() + "\" |");
+                }
+                System.out.print("]");
+            } else {
+                System.out.print(" Nenhum rótulo associado. ]\n");
             }
         }
     }
+    
 }
