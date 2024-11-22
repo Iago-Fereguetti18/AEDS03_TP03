@@ -215,4 +215,21 @@ public class ControleTarefas {
         return rotulosEncontrados;
     }
 
+    public ArrayList<Tarefa> buscarTarefaPorRotulo(String nomeRotulo) throws Exception {
+        ArrayList<Rotulo> rotulosEncontrados = buscarRotulosPorNome(nomeRotulo);
+        ArrayList<Tarefa> tarefasEncontradas = new ArrayList<>();
+
+        for (Rotulo rotulo : rotulosEncontrados) {
+            ArrayList<Integer> idsTarefas = arquivoRotulos.buscarTarefasPorRotulo(rotulo.getId());
+            for (int idTarefa : idsTarefas) {
+                Tarefa tarefa = arquivoTarefas.read(idTarefa);
+                if (tarefa != null) {
+                    tarefasEncontradas.add(tarefa);
+                }
+            }
+        }
+
+        return tarefasEncontradas;
+    }
+
 }

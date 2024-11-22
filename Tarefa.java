@@ -44,7 +44,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import aed3.Registro;
 
@@ -216,10 +218,22 @@ public class Tarefa implements Registro {
 
     @Override
     public String toString() {
+        // Formato personalizado para as datas
+        @SuppressWarnings("deprecation")
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d 'de' MMMM 'de' yyyy", new Locale("pt", "BR"));
+
+        String dataCriacaoFormatada = (this.dataCriacao != null)
+                ? this.dataCriacao.format(formatter)
+                : "Não Definida";
+
+        String dataConclusaoFormatada = (this.dataConclusao != null)
+                ? this.dataConclusao.format(formatter)
+                : "Não Definida";
+
         return "\nID:................: " + this.id +
                 "\nNome:..............: " + (this.nome != null ? this.nome : "Sem Nome") +
-                "\nData de Criação....: " + (this.dataCriacao != null ? this.dataCriacao : "Não Definida") +
-                "\nData de Conclusão..: " + (this.dataConclusao != null ? this.dataConclusao : "Não Definida") +
+                "\nData de Criação....: " + dataCriacaoFormatada +
+                "\nData de Conclusão..: " + dataConclusaoFormatada +
                 "\nStatus.............: " + this.status +
                 "\nPrioridade.........: " + this.prioridade +
                 "\nID Categoria.......: " + this.idCategoria;

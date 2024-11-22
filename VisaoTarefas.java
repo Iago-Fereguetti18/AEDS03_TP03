@@ -1,6 +1,8 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class VisaoTarefas {
     private ControleTarefas controleTarefas;
@@ -8,7 +10,9 @@ public class VisaoTarefas {
     private ControleRotulos controleRotulos;
 
     private Scanner scanner;
-
+    // Formato esperado: DD-MM-YYYY
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    
     public VisaoTarefas(ControleTarefas controleTarefas, ControleCategorias controleCategorias,
             ControleRotulos controleRotulos) {
         this.controleTarefas = controleTarefas;
@@ -23,15 +27,18 @@ public class VisaoTarefas {
             System.out.println("\n\tPUCBOOK 1.0");
             System.out.println("-------------------");
             System.out.println("> Início > Tarefas\n");
-            System.out.println("\t1) Incluir");
-            System.out.println("\t2) Excluir");
-            System.out.println("\t3) Listar");
-            System.out.println("\t4) Atualizar Tarefa");
-            System.out.println("\t5) Atualizar Rótulo");
-            System.out.println("\t6) Adicionar Rótulo à Tarefa");
-            System.out.println("\t7) Excluir Rótulo de Tarefa");
-            System.out.println("\t8) Listar Rótulos de Tarefa");
-            System.out.println("\t9) Buscar por termo");
+            System.out.println("\tOpções exclusivas da Tarefa:");
+            System.out.println("\t    1)  Incluir   Tarefa");
+            System.out.println("\t    2)  Excluir   Tarefa");
+            System.out.println("\t    3)  Listar    detalhes das Tarefas");
+            System.out.println("\t    4)  Atualizar Tarefa");
+            System.out.println("\n\tOpções das Tarefas envolvendo Rótulos:");
+            System.out.println("\t    5)  Atualizar Rótulo de uma Tarefa");
+            System.out.println("\t    6)  Adicionar Rótulo à uma Tarefa");
+            System.out.println("\t    7)  Excluir   Rótulo de uma Tarefa");
+            System.out.println("\t    8)  Listar    Rótulos de uma Tarefa");
+            System.out.println("\t    9)  Buscar    Tarefa por termos na Tarefa");
+            System.out.println("\t    10) Buscar    Tarefa pelo rótulo");
             System.out.println("\t0) Retornar ao menu anterior");
             System.out.print("\nEscolha uma opção: ");
             opcao = scanner.nextInt();
@@ -64,6 +71,9 @@ public class VisaoTarefas {
                     break;
                 case 9:
                     buscarTarefasPorTermo();
+                    break;
+                case 10:
+                    buscarTarefasPorRotulo();
                     break;
 
                 case 0:
@@ -111,19 +121,27 @@ public class VisaoTarefas {
             tarefaSelecionada.setNome(novoNome);
         }
 
-        System.out.print("Nova data de criação (formato: YYYY-MM-DD ou Enter para manter): ");
+        System.out.print("Nova data de criação (formato: DD-MM-YYYY) ou Enter para manter: ");
         String novaDataCriacao = scanner.nextLine();
         if (!novaDataCriacao.isBlank()) {
-            tarefaSelecionada.setDataCriacao(LocalDate.parse(novaDataCriacao));
+            try {
+                tarefaSelecionada.setDataCriacao(LocalDate.parse(novaDataCriacao, formatter));
+            } catch (DateTimeParseException e) {
+                System.out.println("Formato inválido. A data de criação será mantida.");
+            }
         }
 
-        System.out.print("Nova data de conclusão (formato: YYYY-MM-DD ou Enter para manter): ");
+        System.out.print("Nova data de conclusão (formato: DD-MM-YYYY) ou Enter para manter: ");
         String novaDataConclusao = scanner.nextLine();
         if (!novaDataConclusao.isBlank()) {
-            tarefaSelecionada.setDataConclusao(LocalDate.parse(novaDataConclusao));
+            try {
+                tarefaSelecionada.setDataConclusao(LocalDate.parse(novaDataConclusao, formatter));
+            } catch (DateTimeParseException e) {
+                System.out.println("Formato inválido. A data de conclusão será mantida.");
+            }
         }
 
-        System.out.print("Novo status (0 - Pendente, 1 - Em Progresso, 2 - Concluída ou enter para manter): ");
+        System.out.print("Novo status ([0 - Pendente][1 - Em Progresso][2 - Concluída]) ou enter para manter: ");
         String novoStatusInput = scanner.nextLine();
         if (!novoStatusInput.isBlank()) {
             byte novoStatus = Byte.parseByte(novoStatusInput);
@@ -134,7 +152,7 @@ public class VisaoTarefas {
             }
         }
 
-        System.out.print("Nova prioridade (0 - Baixa, 1 - Média, 2 - Alta ou enter para manter): ");
+        System.out.print("Nova prioridade ([0 - Baixa][1 - Média][2 - Alta]) ou enter para manter: ");
         String novaPrioridadeInput = scanner.nextLine();
         if (!novaPrioridadeInput.isBlank()) {
             byte novaPrioridade = Byte.parseByte(novaPrioridadeInput);
@@ -217,21 +235,42 @@ public class VisaoTarefas {
             }
 
             // Solicitar outros atributos
-            System.out.print("Data de criação (formato: YYYY-MM-DD ou Enter para data atual): ");
+            
+            // Solicitar outros atributos
+            System.out.print("Data de criação (formato: DD-MM-YYYY) ou Enter para data atual: ");
             String dataCriacaoInput = scanner.nextLine();
-            LocalDate dataCriacao = dataCriacaoInput.isBlank() ? LocalDate.now() : LocalDate.parse(dataCriacaoInput);
+            LocalDate dataCriacao;
+            if (dataCriacaoInput.isBlank()) {
+                dataCriacao = LocalDate.now();
+            } else {
+                try {
+                    dataCriacao = LocalDate.parse(dataCriacaoInput, formatter);
+                } catch (DateTimeParseException e) {
+                    System.out.println("Formato inválido. Usando a data atual como padrão.");
+                    dataCriacao = LocalDate.now();
+                }
+            }
 
-            System.out.print("Data de conclusão (formato: YYYY-MM-DD ou Enter para indefinida): ");
+            System.out.print("Data de conclusão (formato: DD-MM-YYYY) ou Enter para indefinida: ");
             String dataConclusaoInput = scanner.nextLine();
-            LocalDate dataConclusao = dataConclusaoInput.isBlank() ? LocalDate.of(1970, 1, 1)
-                    : LocalDate.parse(dataConclusaoInput);
+            LocalDate dataConclusao;
+            if (dataConclusaoInput.isBlank()) {
+                dataConclusao = LocalDate.of(1970, 1, 1); // Data padrão
+            } else {
+                try {
+                    dataConclusao = LocalDate.parse(dataConclusaoInput, formatter);
+                } catch (DateTimeParseException e) {
+                    System.out.println("Formato inválido. Usando a data indefinida como padrão.");
+                    dataConclusao = LocalDate.of(1970, 1, 1);
+                }
+            }
 
             System.out
-                    .print("Status (0 - Pendente, 1 - Em Progresso, 2 - Concluída ou Enter para padrão [Pendente]): ");
+                    .print("Status ([0 - Pendente][1 - Em Progresso][2 - Concluída] ou Enter para padrão [Pendente]): ");
             String statusInput = scanner.nextLine();
             byte status = statusInput.isBlank() ? 0 : Byte.parseByte(statusInput);
 
-            System.out.print("Prioridade (0 - Baixa, 1 - Média, 2 - Alta ou Enter para padrão [Baixa]): ");
+            System.out.print("Prioridade ([0 - Baixa][1 - Média][2 - Alta] ou Enter para padrão [Baixa]): ");
             String prioridadeInput = scanner.nextLine();
             byte prioridade = prioridadeInput.isBlank() ? 0 : Byte.parseByte(prioridadeInput);
 
@@ -282,18 +321,19 @@ public class VisaoTarefas {
     private void listarTarefasComRotulos() throws Exception {
         ArrayList<Tarefa> tarefas = controleTarefas.listarTodasTarefas();
 
+        System.out.println("Tarefa(s):");
         for (Tarefa tarefa : tarefas) {
-            System.out.println("Tarefa:");
+
             System.out.println(tarefa);
 
             // Buscar os rótulos associados
             ArrayList<Rotulo> rotulos = controleRotulos.buscarRotulosPorTarefa(tarefa.getId());
+            System.out.print("Rótulos associados.: [");
             if (!rotulos.isEmpty()) {
-                System.out.print("Rótulos associados.: [");
                 for (Rotulo rotulo : rotulos) {
-                    System.out.print(" \"" + rotulo.getRotulo() + "\" |");
+                    System.out.print("-> \"" + rotulo.getRotulo() + "\" ");
                 }
-                System.out.print("]");
+                System.out.print("]\n");
             } else {
                 System.out.print(" Nenhum rótulo associado. ]\n");
             }
@@ -523,6 +563,43 @@ public class VisaoTarefas {
         } else {
             System.out.println("Tarefas encontradas:");
             for (Tarefa tarefa : tarefas) {
+                System.out.println(tarefa);
+            }
+        }
+    }
+
+    private void buscarTarefasPorRotulo() throws Exception {
+        // Exibir rótulos disponíveis para o usuário escolher
+        ArrayList<Rotulo> rotulos = controleRotulos.listarTodosRotulos();
+        if (rotulos.isEmpty()) {
+            System.out.println("Nenhum rótulo encontrado.");
+            return;
+        }
+
+        System.out.println("Escolha um rótulo para buscar as tarefas associadas:");
+        for (int i = 0; i < rotulos.size(); i++) {
+            System.out.println((i + 1) + ") " + rotulos.get(i).getRotulo());
+        }
+
+        System.out.print("Opção: ");
+        int escolhaRotulo = scanner.nextInt();
+        scanner.nextLine(); // Limpar buffer
+
+        if (escolhaRotulo < 1 || escolhaRotulo > rotulos.size()) {
+            System.out.println("Opção inválida.");
+            return;
+        }
+
+        // Recuperar o ID do rótulo selecionado
+        Rotulo rotuloSelecionado = rotulos.get(escolhaRotulo - 1);
+
+        // Buscar tarefas associadas ao rótulo selecionado
+        ArrayList<Tarefa> tarefasEncontradas = controleTarefas.buscarTarefaPorRotulo(rotuloSelecionado.getRotulo());
+        if (tarefasEncontradas.isEmpty()) {
+            System.out.println("Nenhuma tarefa encontrada para o rótulo: " + rotuloSelecionado.getRotulo());
+        } else {
+            System.out.println("Tarefas associadas ao rótulo \"" + rotuloSelecionado.getRotulo() + "\":");
+            for (Tarefa tarefa : tarefasEncontradas) {
                 System.out.println(tarefa);
             }
         }
