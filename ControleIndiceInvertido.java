@@ -35,8 +35,8 @@ public class ControleIndiceInvertido {
         for (String palavra : palavras) {
             // Remove acentos e converte para minúsculas
             String normalizada = Normalizer.normalize(palavra, Normalizer.Form.NFD)
-                                           .replaceAll("[^\\p{ASCII}]", "")
-                                           .toLowerCase();
+                    .replaceAll("[^\\p{ASCII}]", "")
+                    .toLowerCase();
 
             // Ignora stopwords
             if (!stopwords.contains(normalizada)) {
@@ -78,4 +78,16 @@ public class ControleIndiceInvertido {
         removerDoIndice(idTarefa, descricaoAntiga);
         adicionarAoIndice(idTarefa, descricaoNova);
     }
+
+    // Buscar IDs de tarefas no índice invertido por termo
+    public ArrayList<Integer> buscarPorTermo(String termo) throws Exception {
+        ArrayList<Integer> idsTarefas = new ArrayList<>();
+        ElementoLista[] elementos = listaInvertida.read(termo.toLowerCase());
+
+        for (ElementoLista elemento : elementos) {
+            idsTarefas.add(elemento.getId());
+        }
+        return idsTarefas;
+    }
+
 }

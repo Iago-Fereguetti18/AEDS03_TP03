@@ -17,16 +17,17 @@ public class VisaoRotulos {
     public void exibirMenu() {
         int opcao = -1;
         while (opcao != 0) {
-            System.out.println("\n\tGERENCIAR RÓTULOS");
-            System.out.println("---------------------------");
-            System.out.println("1) Criar rótulo");
-            System.out.println("2) Alterar rótulo");
-            System.out.println("3) Excluir rótulo");
-            System.out.println("4) Listar rótulos");
-            System.out.println("5) Listar tarefas por rótulo");
-            System.out.println("6) Vincular rótulo a uma tarefa");
-            System.out.println("7) Desvincular rótulo de uma tarefa");
-            System.out.println("0) Voltar ao menu principal");
+            System.out.println("\n\tPUCBOOK 1.0");
+            System.out.println("-------------------");
+            System.out.println("> Início > Rótulos\n");
+            System.out.println("\t1) Criar rótulo");
+            System.out.println("\t2) Alterar rótulo");
+            System.out.println("\t3) Excluir rótulo");
+            System.out.println("\t4) Listar rótulos");
+            System.out.println("\t5) Listar tarefas por rótulo");
+            System.out.println("\t6) Vincular rótulo a uma tarefa");
+            System.out.println("\t7) Desvincular rótulo de uma tarefa");
+            System.out.println("\t0) Voltar ao menu principal");
             System.out.print("\nEscolha uma opção: ");
             opcao = scanner.nextInt();
             scanner.nextLine(); // Limpar buffer
