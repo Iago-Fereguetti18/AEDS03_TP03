@@ -147,7 +147,7 @@ Neste trabalho prático foi:
 
 ## Experiência
 
-
+Tivemos problema quando tentavamos deletar uma categoria, que ocasionava em erro. No geral tinhamos que tomar cuidado toda vez que iamos alterar algo no codigo pra não dar erro em outro arquivo.
   
 ## Perguntas
 
