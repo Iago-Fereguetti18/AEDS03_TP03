@@ -14,8 +14,8 @@ public class ArquivoRotulos extends Arquivo<Rotulo> {
         super(construtor, nomeArquivo);
 
         // Inicializa as Árvores B+ para gerenciar o relacionamento N:N
-        tarefaParaRotulo = new ArvoreBMais<>(ParIdId.class.getConstructor(), 5, "dados/tarefaParaRotulo.db");
-        rotuloParaTarefa = new ArvoreBMais<>(ParIdId.class.getConstructor(), 5, "dados/rotuloParaTarefa.db");
+        tarefaParaRotulo = new ArvoreBMais<>(ParIdId.class.getConstructor(), 5, "dados/arvoreTarefaParaRotulo.db");
+        rotuloParaTarefa = new ArvoreBMais<>(ParIdId.class.getConstructor(), 5, "dados/arvoreRotuloParaTarefa.db");
        
     }
 
